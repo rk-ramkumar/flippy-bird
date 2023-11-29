@@ -1,0 +1,86 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://Main.gd" type="Script" id=2]
+[ext_resource path="res://Bird.gd" type="Script" id=3]
+[ext_resource path="res://GameOverScreen.gd" type="Script" id=4]
+[ext_resource path="res://Pipe.tscn" type="PackedScene" id=5]
+[ext_resource path="res://ModernWarfare-OV7KP.ttf" type="DynamicFontData" id=6]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 52.05, 7.5 )
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 30, 29 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 68
+font_data = ExtResource( 6 )
+
+[node name="Main" type="ViewportContainer"]
+stretch = true
+script = ExtResource( 2 )
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2( 102, 639 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 407, 0 )
+scale = Vector2( 10, 1 )
+shape = SubResource( 2 )
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 416, -650.5 )
+scale = Vector2( 10, 1 )
+shape = SubResource( 2 )
+
+[node name="Pipes" type="Node2D" parent="."]
+
+[node name="Pipe" parent="Pipes" groups=["pipes"] instance=ExtResource( 5 )]
+
+[node name="Bird" type="KinematicBody2D" parent="."]
+position = Vector2( 597, -31 )
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bird"]
+position = Vector2( 238, 66 )
+shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="Bird"]
+position = Vector2( 238, 67 )
+texture = ExtResource( 1 )
+
+[node name="GameOverScreen" type="Node2D" parent="."]
+pause_mode = 2
+script = ExtResource( 4 )
+
+[node name="ColorRect" type="ColorRect" parent="GameOverScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 1026.0
+margin_bottom = 606.0
+color = Color( 1, 1, 1, 0.0705882 )
+
+[node name="Retry" type="Button" parent="GameOverScreen"]
+margin_left = 418.0
+margin_top = 247.0
+margin_right = 620.0
+margin_bottom = 323.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "GameOver"
+
+[node name="Score" type="Label" parent="."]
+margin_left = 500.0
+margin_right = 540.0
+margin_bottom = 55.0
+custom_fonts/font = SubResource( 3 )
+align = 1
+uppercase = true
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_entered" from="Pipes/Pipe" to="." method="_on_Pipe_body_entered"]
+[connection signal="restart" from="GameOverScreen" to="." method="_on_GameOverScreen_restart"]
+[connection signal="pressed" from="GameOverScreen/Retry" to="GameOverScreen" method="_on_Retry_pressed"]
